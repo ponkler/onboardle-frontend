@@ -51,7 +51,7 @@ export class GameComponent implements OnInit {
     this.updateCountdown();
     this.intervalId = setInterval(() => this.updateCountdown(), 1000);
 
-    this.http.get('https://18.119.120.216:5000/games').subscribe({
+    this.http.get('/api/games').subscribe({
       next: (response) => {
         this.game = response;
         if (localStorage.getItem(this.storageKey) != null) {
@@ -78,13 +78,13 @@ export class GameComponent implements OnInit {
           };
           localStorage.setItem(this.storageKey, btoa(JSON.stringify(this.gameStorage)));
         }
-        this.http.get(`https://18.119.120.216:5000/drivers/${this.game.photoInfo.year}`).subscribe({
+        this.http.get(`/api/drivers/${this.game.photoInfo.year}`).subscribe({
           next: (response: any) => {
             this.correctDriverTeam = response.drivers.find((driver: any) => driver.name == this.game.photoInfo.driver).teamName;
           }
         });
         this.guessedArray = [false, false, false, false, false];
-        this.http.get('https://18.119.120.216:5000' + this.game.photoInfo.path, { responseType: 'blob' }).subscribe({
+        this.http.get('/api/photos/' + this.game.photoInfo.path, { responseType: 'blob' }).subscribe({
           next: (response) => {
             this.image = URL.createObjectURL(response);
           },
@@ -102,12 +102,12 @@ export class GameComponent implements OnInit {
       if (value) {
         this.guessForm.get('track')?.reset();
         this.guessForm.get('driver')?.reset();
-        this.http.get(`https://18.119.120.216:5000/tracks/${value}`).subscribe({
+        this.http.get(`/tracks/${value}`).subscribe({
           next: (response) => {
             this.tracks = response;
           }
         });
-        this.http.get(`https://18.119.120.216:5000/drivers/${value}`).subscribe({
+        this.http.get(`/api/drivers/${value}`).subscribe({
           next: (response: any) => {
             this.drivers = response.drivers;
             this.teams = response.teams;
