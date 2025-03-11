@@ -78,7 +78,7 @@ export class GameComponent implements OnInit {
           };
           localStorage.setItem(this.storageKey, btoa(JSON.stringify(this.gameStorage)));
         }
-        this.http.get(`/api/drivers/${this.game.photoInfo.year}`).subscribe({
+        this.http.get(`/api/drivers/${btoa(this.game.photoInfo.year)}`).subscribe({
           next: (response: any) => {
             this.correctDriverTeam = response.drivers.find((driver: any) => driver.name == this.game.photoInfo.driver).teamName;
           }
@@ -100,14 +100,15 @@ export class GameComponent implements OnInit {
 
     this.guessForm.get('year')?.valueChanges.subscribe(value => {
       if (value) {
+        let b64Year = btoa(String(value));
         this.guessForm.get('track')?.reset();
         this.guessForm.get('driver')?.reset();
-        this.http.get(`/tracks/${value}`).subscribe({
+        this.http.get(`/api/tracks/${b64Year}`).subscribe({
           next: (response) => {
             this.tracks = response;
           }
         });
-        this.http.get(`/api/drivers/${value}`).subscribe({
+        this.http.get(`/api/drivers/${b64Year}`).subscribe({
           next: (response: any) => {
             this.drivers = response.drivers;
             this.teams = response.teams;
