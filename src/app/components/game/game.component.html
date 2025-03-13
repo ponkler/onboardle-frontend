@@ -26,24 +26,21 @@
             @if (!gameWon && gameStorage.guesses.length !== 5) {
             <form [formGroup]="guessForm" (ngSubmit)="submitGuess()">
                 <label for="year" class="text-white text-xl">Year</label>
-                <select formControlName="year" onmousedown="if(this.options.length>8){this.size=8;}"
-                    onchange='this.size=0;' onblur="this.size=0;" id="year"
+                <select formControlName="year" id="year"
                     [ngClass]="getYearBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
                     <option *ngFor="let year of years" [value]="year">{{year}}</option>
                 </select>
                 @if (guessForm.get('year')?.value) {
                 <label for="track" class="text-white text-xl">Track</label>
-                <select formControlName="track" onmousedown="if(this.options.length>8){this.size=8;}"
-                    onchange='this.size=0;' onblur="this.size=0;" id="track"
+                <select formControlName="track" id="track"
                     [ngClass]="getTrackBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
                     <option *ngFor="let track of tracks" [title]="track.name" [value]="track.name">{{track.name}}</option>
                 </select>
 
                 <label for="driver" class="text-white text-xl">Driver</label>
-                <select formControlName="driver" onmousedown="if(this.options.length>8){this.size=8;}"
-                    onchange='this.size=0;' onblur="this.size=0;" id="driver"
+                <select formControlName="driver" id="driver"
                     [ngClass]="getDriverBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
                     @for (team of teams; track team) {
