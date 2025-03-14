@@ -1,0 +1,14 @@
+<div class="fixed inset-0 z-50 flex justify-center bg-slate-900/50">
+    <div class="bg-slate-800 rounded-md shadow-xl p-6 w-full max-w-md h-fit relative top-10">
+      <button (click)="closeHelp()" class="absolute top-2 right-4 text-white hover:text-gray-400 text-2xl" aria-label="Close modal">
+        &times;
+      </button>
+      <p class="text-emerald-500 font-bold">Green:</p>
+      <p class="text-white mb-4">The guess is correct</p>
+      <p class="text-amber-300 font-bold">Yellow:</p>
+      <p class="text-white">Year guess is within 2 years of the correct year</p>
+      <p class="text-white mb-4">Driver guess is the correct team</p>
+      <p class="text-rose-700 font-bold">Red:</p>
+      <p class="text-white mb-2">The guess is incorrect</p>
+    </div>
+  </div>

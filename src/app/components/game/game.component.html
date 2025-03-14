@@ -3,9 +3,21 @@
 
     </div>
     <div class="col-span-2 px-2" *ngIf="gameStorage.guesses">
+        <app-help-modal *ngIf="showHelpModal" (close)="closeHelpModal()"></app-help-modal>
         <div class="grid grid-flow-row auto-rows-max justify-center">
-            <div class="">
-                <h1 class="text-4xl font-bold text-white text-center">🏎️Onboardle🏎️</h1>
+            <div class="flex justify-between">
+                <div class="w-8"></div>
+                <h1 class="text-3xl font-bold text-white text-center">🏎️Onboardle🏎️</h1>
+                <div class="flex align-middle">
+                    <button type="button" class="cursor-pointer" (click)="openHelpModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#fff" class="m-auto"
+                            viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path
+                                d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <img *ngIf="image" class="h-auto max-w-full box-border rounded-md mt-4 border-3 border-gray-700"
                 [src]="image" alt="A cropped image taken from onboard footage of a Formula 1 car" />
@@ -26,22 +38,20 @@
             @if (!gameWon && gameStorage.guesses.length !== 5) {
             <form [formGroup]="guessForm" (ngSubmit)="submitGuess()">
                 <label for="year" class="text-white text-xl">Year</label>
-                <select formControlName="year" id="year"
-                    [ngClass]="getYearBorderClass()"
+                <select formControlName="year" id="year" [ngClass]="getYearBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
                     <option *ngFor="let year of years" [value]="year">{{year}}</option>
                 </select>
                 @if (guessForm.get('year')?.value) {
                 <label for="track" class="text-white text-xl">Track</label>
-                <select formControlName="track" id="track"
-                    [ngClass]="getTrackBorderClass()"
+                <select formControlName="track" id="track" [ngClass]="getTrackBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
-                    <option *ngFor="let track of tracks" [title]="track.name" [value]="track.name">{{track.name}}</option>
+                    <option *ngFor="let track of tracks" [title]="track.name" [value]="track.name">{{track.name}}
+                    </option>
                 </select>
 
                 <label for="driver" class="text-white text-xl">Driver</label>
-                <select formControlName="driver" id="driver"
-                    [ngClass]="getDriverBorderClass()"
+                <select formControlName="driver" id="driver" [ngClass]="getDriverBorderClass()"
                     class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
                     @for (team of teams; track team) {
                     <p>{{team}}</p>
@@ -85,7 +95,7 @@
             <h4 *ngIf="error" class="text-rose-700 text-xl mt-8 text-center">{{error}}</h4>
 
             <h4 class="text-white text-xl mt-8 text-center">Next Game:</h4>
-            <p class="text-white text-center text-2xl">{{countdown}}</p>
+            <p class="text-white text-center text-2xl mb-10">{{countdown}}</p>
         </div>
     </div>
 </div>

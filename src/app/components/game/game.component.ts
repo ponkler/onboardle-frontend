@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Component, inject, OnInit } from '@angular/core';
+import { HelpModalComponent } from "../help-modal/help-modal.component";
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HelpModalComponent, HelpModalComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
@@ -13,7 +14,8 @@ export class GameComponent implements OnInit {
   private http = inject(HttpClient);
   private date = new Date(Date.now()).toISOString();
   private storageKey = this.date.substring(0, this.date.indexOf('T'));
-  private intervalId: any;
+  
+  showHelpModal = false;
   
   countdown: string = '';
 
@@ -49,7 +51,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.updateCountdown();
-    this.intervalId = setInterval(() => this.updateCountdown(), 1000);
+    setInterval(() => this.updateCountdown(), 1000);
 
     this.http.get('/api/games').subscribe({
       next: (response) => {
@@ -220,22 +222,29 @@ export class GameComponent implements OnInit {
   }
 
   getYearBorderClass(): string {
-    if (!this.hasGuessed) return 'dark:border-gray-500 border';
-    if (this.correctYear) return 'dark:border-emerald-500 border-4';
-    if (this.closeYear) return 'dark:border-amber-300 border-4';
-    return 'dark:border-rose-700 border-4';
+    if (!this.hasGuessed) return 'border-gray-500 border';
+    if (this.correctYear) return 'border-emerald-500 border-4';
+    if (this.closeYear) return 'border-amber-300 border-4';
+    return 'border-rose-700 border-4';
   }
   
   getTrackBorderClass(): string {
-    if (!this.hasGuessed) return 'dark:border-gray-500 border';
-    return this.correctTrack ? 'dark:border-emerald-500 border-4' : 'dark:border-rose-700 border-4';
+    if (!this.hasGuessed) return 'border-gray-500 border';
+    return this.correctTrack ? 'border-emerald-500 border-4' : 'border-rose-700 border-4';
   }
   
   getDriverBorderClass(): string {
-    if (!this.hasGuessed) return 'dark:border-gray-500 border';
-    if (this.correctDriver) return 'dark:border-emerald-500 border-4';
-    if (this.closeDriver) return 'dark:border-amber-300 border-4';
-    return 'dark:border-rose-700 border-4';
+    if (!this.hasGuessed) return 'border-gray-500 border';
+    if (this.correctDriver) return 'border-emerald-500 border-4';
+    if (this.closeDriver) return 'border-amber-300 border-4';
+    return 'border-rose-700 border-4';
   }
-  
+
+  openHelpModal() {
+    this.showHelpModal = true;
+  }
+
+  closeHelpModal() {
+    this.showHelpModal = false;
+  }
 }
