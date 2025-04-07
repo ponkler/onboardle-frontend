@@ -1,0 +1,18 @@
+<!--🟢🟡🔴-->
+
+<div class="fixed inset-0 z-40 flex justify-center bg-slate-900/50">
+    <div class="bg-slate-800 z-50 rounded-md shadow-xl p-6 w-full max-w-md h-fit relative top-10 m-4">
+      <button (click)="closeGuess()" class="absolute top-2 right-4 text-white hover:text-gray-400 text-2xl cursor-pointer" aria-label="Close modal">
+        &times;
+      </button>
+      @for (guess of content; track $index) {
+        <p class="text-white font-bold mt-2">Guess #{{$index + 1}}:</p>
+        <p class="text-white">{{guess.yearString}}</p>
+        <p class="text-white">{{guess.trackString}}</p>
+        @if (guess.helperString != "") {
+          <p class="text-white ms-8">{{guess.helperString}}</p>
+        }
+        <p class="text-white">{{guess.driverString}}</p>
+      }
+    </div>
+  </div>

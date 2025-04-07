@@ -1,3 +1,14 @@
 import { Routes } from '@angular/router';
+import { GameComponent } from './components/game/game.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+    {
+        path: "offset/:offset",
+        component: GameComponent
+    },
+    {
+        path: "",
+        component: GameComponent,
+        pathMatch: "full"
+    },
+];

@@ -4,9 +4,19 @@
     </div>
     <div class="col-span-2 px-2" *ngIf="gameStorage.guesses">
         <app-help-modal *ngIf="showHelpModal" (close)="closeHelpModal()"></app-help-modal>
+        <app-guess-modal [content]="guessModalContent" *ngIf="showGuessModal" (close)="closeGuessModal()"></app-guess-modal>
         <div class="grid grid-flow-row auto-rows-max justify-center">
             <div class="flex justify-between">
-                <div class="w-8"></div>
+                <div *ngIf="gameStorage.guesses.length == 0" class="w-8"></div>
+                <div *ngIf="gameStorage.guesses.length != 0" class="flex align-middle">
+                    <button type="button" class="cursor-pointer" (click)="openGuessModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#fff" class="m-auto" viewBox="0 0 16 16">
+                            <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                            <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                            <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                    </button>
+                </div>
                 <h1 class="text-3xl font-bold text-white text-center">🏎️Onboardle🏎️</h1>
                 <div class="flex align-middle">
                     <button type="button" class="cursor-pointer" (click)="openHelpModal()">
@@ -19,7 +29,8 @@
                     </button>
                 </div>
             </div>
-            <img *ngIf="image" class="h-auto max-w-full box-border rounded-md mt-4 border-3 border-gray-700"
+            <p class="text-center p-0 text-gray-500">{{getGameDate()}}</p>
+            <img *ngIf="image" class="h-auto max-w-full box-border rounded-md mt-2 border-3 border-gray-700"
                 [src]="image" alt="A cropped image taken from onboard footage of a Formula 1 car" />
             <div>
                 <div class="flex justify-center gap-3 mt-6">
@@ -39,20 +50,28 @@
             <form [formGroup]="guessForm" (ngSubmit)="submitGuess()">
                 <label for="year" class="text-white text-xl">Year</label>
                 <select formControlName="year" id="year" [ngClass]="getYearBorderClass()"
-                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
+                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-2">
                     <option *ngFor="let year of years" [value]="year">{{year}}</option>
                 </select>
                 @if (guessForm.get('year')?.value) {
                 <label for="track" class="text-white text-xl">Track</label>
                 <select formControlName="track" id="track" [ngClass]="getTrackBorderClass()"
-                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
-                    <option *ngFor="let track of tracks" [title]="track.name" [value]="track.name">{{track.name}}
-                    </option>
+                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-2">
+                    @for (country of countries; track country) {
+                        <p>{{country}}</p>
+                        <optgroup label={{country}}>
+                            @for (track of tracks; track track) {
+                            @if (track.country == country) {
+                            <option [value]="track.name">{{track.name}}</option>
+                            }
+                            }
+                        </optgroup>
+                        }
                 </select>
-
+                <p class="text-white text-center text-lg" *ngIf="trackHelper != '' && !correctTrack">{{trackHelper}}</p>
                 <label for="driver" class="text-white text-xl">Driver</label>
                 <select formControlName="driver" id="driver" [ngClass]="getDriverBorderClass()"
-                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-4">
+                    class="bg-gray-100 text-slate-900 text-lg rounded-md block w-full p-2 mt-2 mb-2">
                     @for (team of teams; track team) {
                     <p>{{team}}</p>
                     <optgroup label={{team}}>
@@ -93,9 +112,37 @@
             }
 
             <h4 *ngIf="error" class="text-rose-700 text-xl mt-8 text-center">{{error}}</h4>
-
-            <h4 class="text-white text-xl mt-8 text-center">Next Game:</h4>
-            <p class="text-white text-center text-2xl mb-10">{{countdown}}</p>
+            <div class="flex justify-between">
+                <div class="flex align-middle">
+                    @if (hasPreviousGame()) {
+                        <button class="bg-emerald-500 aspect-square m-auto p-2 rounded cursor-pointer" (click)="previousGame()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#fff" class="flex m-auto" viewBox="0 0 16 16">
+                                <path d="M8.404 7.304a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696z"/>
+                                <path d="M.404 7.304a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696z"/>
+                            </svg>
+                        </button>
+                    } @else {
+                        <div class="w-12"></div>
+                    }
+                    
+                </div>
+                <div class="align-middle">
+                    <h4 class="text-white text-xl mt-8 text-center">Next Game:</h4>
+                    <p class="text-white text-center text-2xl mb-10">{{countdown}}</p>
+                </div>
+                <div class="flex align-middle">
+                    @if (dateOffset > 0) {
+                        <button  class="bg-emerald-500 aspect-square m-auto p-2 rounded cursor-pointer" (click)="nextGame()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#fff" class="flex m-auto" viewBox="0 0 16 16">
+                                <path d="M7.596 7.304a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z"/>
+                                <path d="M15.596 7.304a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z"/>
+                              </svg>
+                        </button>
+                    } @else {
+                        <div class="w-12"></div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
