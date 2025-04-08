@@ -93,7 +93,7 @@ export class GameComponent implements OnInit {
       this.router.navigate(['/']);
     }
 
-    this.date = new Date(Date.UTC(this.now.getUTCFullYear(), this.now.getUTCMonth(), this.now.getUTCDate() - this.dateOffset, this.now.getUTCHours() - 16, this.now.getUTCMinutes(), this.now.getUTCSeconds()));
+    this.date = new Date(Date.UTC(this.now.getUTCFullYear(), this.now.getUTCMonth(), this.now.getUTCDate() - this.dateOffset, this.now.getUTCHours() - 9, this.now.getUTCMinutes(), this.now.getUTCSeconds()));
 
     if (this.date < this.startDate) {
       this.router.navigate(['/']);
@@ -378,7 +378,7 @@ export class GameComponent implements OnInit {
 
   private updateCountdown() {
     let now = new Date();
-    const nextGameTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 16, 0, 0));
+    const nextGameTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, -8, 0, 0));
     
     const timeDifference = nextGameTime.getTime() - now.getTime();
 
