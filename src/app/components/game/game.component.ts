@@ -377,6 +377,41 @@ export class GameComponent implements OnInit {
   }
 
   private updateCountdown() {
+    const now = new Date();
+  
+    const today9amUTC = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      16, 0, 0
+    ));
+  
+    let nextGameTime = today9amUTC;
+  
+    if (now >= today9amUTC) {
+      nextGameTime = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() + 1,
+        16, 0, 0
+      ));
+    }
+  
+    const timeDifference = nextGameTime.getTime() - now.getTime();
+  
+    if (timeDifference > 0) {
+      const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  
+      this.countdown = `${hours}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
+    } else {
+      this.countdown = "00:00:00";
+    }
+  }
+
+  /*
+  private updateCountdown() {
     let now = new Date();
     const nextGameTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, -8, 0, 0));
     
@@ -392,6 +427,7 @@ export class GameComponent implements OnInit {
       this.countdown = "00:00:00";
     }
   }
+  */
 
   private padZero(num: number): string {
     return num < 10 ? '0' + num : num.toString();
