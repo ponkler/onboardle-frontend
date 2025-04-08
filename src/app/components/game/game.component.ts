@@ -93,7 +93,7 @@ export class GameComponent implements OnInit {
       this.router.navigate(['/']);
     }
 
-    this.date = new Date(Date.UTC(this.now.getUTCFullYear(), this.now.getUTCMonth(), this.now.getUTCDate() - this.dateOffset, this.now.getUTCHours() - 9, this.now.getUTCMinutes(), this.now.getUTCSeconds()));
+    this.date = new Date(Date.UTC(this.now.getUTCFullYear(), this.now.getUTCMonth(), this.now.getUTCDate() - this.dateOffset, this.now.getUTCHours() - 16, this.now.getUTCMinutes(), this.now.getUTCSeconds()));
 
     if (this.date < this.startDate) {
       this.router.navigate(['/']);
