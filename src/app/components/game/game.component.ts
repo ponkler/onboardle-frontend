@@ -73,7 +73,7 @@ export class GameComponent implements OnInit {
 
   gameWon: boolean = false;
 
-  years: number[] = Array.from({length: 2025-1985}, (_, i: number) => 1985 + i);
+  years: number[] = Array.from({length: 2025-1984}, (_, i: number) => 1985 + i);
 
   guessForm = new FormGroup({
     year: new FormControl(0, [Validators.required]),
